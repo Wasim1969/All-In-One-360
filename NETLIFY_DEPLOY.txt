@@ -1,0 +1,1 @@
+Extract ZIP and upload the folder containing index.html to https://app.netlify.com/drop

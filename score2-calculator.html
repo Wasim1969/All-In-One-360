@@ -1,0 +1,123 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SCORE2 Cardiovascular Risk | All-in-One 360</title><style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#1d3046;background:#edf3f8}*{box-sizing:border-box}body{margin:0}.wrap{max-width:1160px;margin:auto;padding:20px}header{background:#123e66;color:#fff;padding:18px 24px;border-radius:12px}h1{margin:0 0 6px;font-size:25px}header p{margin:0;color:#d7e8f7}section{background:white;border:1px solid #d7e2ed;border-radius:11px;padding:18px;margin:14px 0}h2{font-size:18px;margin:0 0 13px;color:#174f7a}.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}label{font-size:13px;font-weight:bold;display:block}input,select{width:100%;padding:10px;border:1px solid #b5c7d6;border-radius:7px;background:#fff;margin-top:5px;font:inherit}button{background:#1766a2;color:white;border:0;border-radius:7px;padding:12px 18px;cursor:pointer;font-weight:bold}button.secondary{background:#52677a}.buttons{display:flex;flex-wrap:wrap;gap:10px}.status{border-radius:8px;padding:13px;background:#fff3d5;color:#634500;font-weight:bold}.muted{color:#5d6d7c;font-size:14px}.summary{white-space:pre-wrap;line-height:1.6;background:#f3f7fb;padding:14px;border-radius:8px}a{color:#1766a2}.hide{display:none}@media print{button,.no-print{display:none!important}body{background:white}.wrap{padding:0}section{break-inside:avoid}} </style></head><body><main class="wrap"><header><h1>SCORE2 Cardiovascular Risk Calculator</h1><p>ESC SCORE2 • SCORE2-OP • SCORE2-Diabetes | Clinical safety-gated assessment</p></header>
+<section><h2>1. Patient Assessment</h2><div class="fields">
+<label>Age (years)<input id="age" type="number" min="1" max="120"></label><label>Sex<select id="sex"><option value="" selected disabled>Select...</option><option value="male">Male</option><option value="female">Female</option></select></label><label>Smoking<select id="smoking"><option value="" selected disabled>Select...</option><option value="no">No</option><option value="yes">Current smoker</option></select></label><label>Systolic BP (mmHg)<input id="sbp" type="number" min="50" max="300"></label><label>Cholesterol unit<select id="unit"><option value="" selected disabled>Select...</option><option value="mg">mg/dL</option><option value="mmol">mmol/L</option></select></label><label>Total cholesterol<input id="tc" type="number" min="0" step="any"></label><label>HDL cholesterol<input id="hdl" type="number" min="0" step="any"></label><label>LDL-C (optional; for treatment guidance only)<input id="ldl" type="number" min="0" step="any" placeholder="Leave blank if unavailable"></label><label>ESC risk region<select id="region"><option value="">Select region</option><option value="low">Low</option><option value="moderate">Moderate</option><option value="high">High</option><option value="very-high">Very high</option><option value="outside">Outside validated European regions / unknown</option></select></label><label>Type 2 diabetes<select id="diabetes"><option value="" selected disabled>Select...</option><option value="no">No</option><option value="yes">Yes</option></select></label><label>Chronic kidney disease<select id="ckd"><option value="" selected disabled>Select...</option><option value="no">No</option><option value="yes">Yes</option></select></label><label>Established ASCVD<select id="cvd"><option value="" selected disabled>Select...</option><option value="no">No</option><option value="yes">Yes</option></select></label></div><div id="diabFields" class="fields hide" style="margin-top:12px"><label>Age at diabetes diagnosis<input id="diagage" type="number" min="1" max="120"></label><label>HbA1c (%)<input id="hba1c" type="number" step="any" min="3" max="20"></label><label>eGFR (mL/min/1.73 m²)<input id="egfr" type="number" step="any" min="0" max="200"></label></div></section>
+<section><h2>2. Model Selection</h2><div id="model">—</div><p class="muted">Automatic selection by age and type 2 diabetes status. Established ASCVD and relevant clinical exclusions take priority.</p></section>
+<section><h2>3. Risk Calculation</h2><div class="status" id="status">Awaiting patient data.</div><p id="risk">10-year CVD risk: —</p><p class="muted">SCORE2 (40–69, without diabetes): published ESC 2021 coefficients and four European regional calibrations. SCORE2-OP and SCORE2-Diabetes remain UNVERIFIED pending complete independent validation. Not calibrated for Saudi Arabia or other non-European countries.</p></section>
+<section><h2>4. Clinical Interpretation</h2><div id="interpret">Enter patient data and select Calculate.</div><p class="muted">ESC 2021 age-specific thresholds and ESC/EAS 2025 dyslipidaemia risk bands are separate frameworks. Clinical decisions require assessment of risk modifiers and contraindications.</p></section>
+<section><h2>5. Clinical Next Steps &amp; Treatment Plan</h2><div id="nextsteps" class="summary">Calculate to display case-specific advice and safety notes.</div></section>
+<section><h2>6. Final Summary</h2><div id="summary" class="summary">No assessment yet.</div><div class="buttons" style="margin-top:14px"><button id="calculate">Calculate</button><button class="secondary" id="reset">Reset</button><button class="secondary" id="copy">Copy Result</button><button class="secondary" id="print">Print / Export PDF</button></div></section>
+<section class="no-print"><h2>Clinical references</h2><p><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8248998/" target="_blank" rel="noopener">SCORE2 original publication (2021)</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8248997/" target="_blank" rel="noopener">SCORE2-OP (2021)</a> · <a href="https://academic.oup.com/eurheartj/article/43/3/241/6433491" target="_blank" rel="noopener">SCORE2 four-decimal coefficients and calibration (2022)</a> · <a href="https://doi.org/10.1093/eurheartj/ehad260" target="_blank" rel="noopener">SCORE2-Diabetes (2023)</a> · <a href="https://academic.oup.com/eurheartj/article/46/42/4359/8234482" target="_blank" rel="noopener">ESC/EAS dyslipidaemia focused update (2025)</a></p></section></main>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const ids=['age','sex','smoking','sbp','unit','tc','hdl','ldl','region','diabetes','ckd','cvd','diagage','hba1c','egfr'];
+const coefs={
+ male:{base:.9605,b:[.3742,.6012,.2777,.1458,-.2698,-.0755,-.0255,-.0281,.0426],regions:{low:[-.5699,.7476],moderate:[-.1565,.8009],high:[.3207,.9360],'very-high':[.5836,.8294]}},
+ female:{base:.9776,b:[.4648,.7744,.3131,.1002,-.2606,-.1088,-.0277,-.0226,.0613],regions:{low:[-.7380,.7019],moderate:[-.3143,.7701],high:[.5710,.9369],'very-high':[.9412,.8329]}}
+};
+function score2(age,sex,smoker,sbp,tc,hdl,region){
+ const c=coefs[sex],a=(age-60)/5,s=smoker?1:0,bp=(sbp-120)/20,t=tc-6,h=(hdl-1.3)/.5;
+ const x=[a,s,bp,t,h,a*s,a*bp,a*t,a*h];
+ const lp=x.reduce((acc,n,i)=>acc+n*c.b[i],0);
+ const hazard=-Math.log(c.base)*Math.exp(lp);
+ const [scale1,scale2]=c.regions[region];
+ return 100*(-Math.expm1(-Math.exp(scale1+scale2*Math.log(hazard))));
+}
+function modelFor(age,dm){return age>=70&&age<=89?'SCORE2-OP':age>=40&&age<=69?(dm?'SCORE2-Diabetes':'SCORE2'):'NOT APPLICABLE'}
+function esc2021(age,r){const a=age<50?[2.5,7.5]:age<70?[5,10]:[7.5,15];return r<a[0]?'Low-to-moderate':r<a[1]?'High':'Very high'}
+function lipid2025(r){return r<2?'Low':r<10?'Moderate':r<20?'High':'Very high'}
+function elevatedLipidBand(base,tc,sbp){const rank={'Low':0,'Moderate':1,'High':2,'Very high':3};return (tc>8||sbp>=180)?(rank[base]<2?'High':base):base}
+function treatmentPlan(v,risk,preventionBand,scoreBand,ldl,tcm,sbp){
+ const band=elevatedLipidBand(scoreBand,tcm,sbp);
+ let lines=['TREATMENT PLAN — ESC/EAS 2025 (conditional clinical guidance)','Risk from SCORE2: '+scoreBand+'. Overall lipid-management risk: '+band+(band!==scoreBand?' (raised by markedly elevated single risk factor)':'' )+'.','This is decision support, not a prescription; confirm comorbidities, baseline labs, contraindications, pregnancy status when relevant, and patient preferences.','',
+ '1. LIFESTYLE AND RISK-FACTOR CONTROL','• Offer smoking cessation support when smoking; advise heart-healthy diet, regular physical activity and weight management.','• Repeat BP measurements or use home/ambulatory monitoring when indicated; manage confirmed hypertension according to current guidelines.','• Assess family history, CKD/eGFR, diabetes, lipoprotein(a), and other risk modifiers when clinically indicated.','',
+ '2. LDL-C LOWERING — 2025 ESC/EAS THRESHOLDS'];
+ const thresholds={ 'Very high':{i:1.8,ii:1.4,goal:1.4},'High':{i:2.6,ii:1.8,goal:1.8},'Moderate':{ii:2.6,goal:2.6},'Low':{ii:3.0,goal:3.0}};
+ const t=thresholds[band];
+ if(ldl===null){lines.push('• LDL-C not supplied: no patient-specific medication eligibility decision. Enter LDL-C to apply the guideline thresholds.');}
+ else {lines.push('• Measured LDL-C: '+ldl.toFixed(2)+' mmol/L ('+(ldl*38.67).toFixed(0)+' mg/dL).');
+ if(t.i!==undefined&&ldl>=t.i)lines.push('• Class I: pharmacologic LDL-C lowering is recommended after lifestyle optimization at this LDL-C level, subject to clinical assessment.');
+ else if(ldl>=t.ii&&ldl<4.9)lines.push('• Class IIa: pharmacologic LDL-C lowering should be considered after lifestyle optimization, using shared decision-making.');
+ else if(ldl>=4.9)lines.push('• Markedly elevated LDL-C (≥4.9 mmol/L): investigate severe hypercholesterolaemia/familial hypercholesterolaemia and assess treatment independently of SCORE2.');
+ else lines.push('• LDL-C is below the quoted 2025 risk-band initiation thresholds; this alone does not rule out treatment for other indications.');
+ }
+ lines.push('• Risk-band LDL-C goal (general ESC/EAS target): <'+t.goal.toFixed(1)+' mmol/L (<'+Math.round(t.goal*38.67)+' mg/dL)'+(band==='Very high'?' and ≥50% reduction from baseline when applicable':band==='High'?' and ≥50% reduction from baseline when applicable':'')+'. Goals are not automatic prescribing instructions.');
+ lines.push('','3. MEDICATION SEQUENCE (IF INDICATED)','• Clinician-selected maximally tolerated statin is the usual first-line therapy; intensity depends on risk, baseline LDL-C, tolerance and interactions.','• If target is not reached on tolerated statin, consider adding ezetimibe.','• For persistent elevation in high/very-high-risk patients, assess eligibility for a PCSK9 inhibitor; consider bempedoic acid when statin intolerance or additional LDL-C reduction warrants it.','• No specific drug, dose or prescription can be determined without a medication history, contraindication review and measured LDL-C.');
+ lines.push('','4. FOLLOW-UP AND MONITORING','• Document baseline lipid panel and assess response/adherence after starting or adjusting treatment, typically at 4–12 weeks, then periodically.','• Check medication tolerability, interactions and relevant safety tests when clinically indicated.','• Reassess BP, smoking, lifestyle, adherence and risk modifiers at follow-up.');
+ lines.push('','5. GUIDELINE RISK CATEGORIES (ESC/EAS 2025)','• Very high: SCORE2 ≥20%, or established ASCVD, severe CKD, diabetes with organ damage/multiple risk factors, or FH with a major risk factor.','• High: SCORE2 10–<20%, or markedly elevated single risk factor, moderate CKD, or relevant FH/diabetes criteria.','• Moderate: SCORE2 2–<10%; selected younger uncomplicated diabetes cases.','• Low: SCORE2 <2%.','• These 2025 lipid bands differ from the ESC 2021 age-specific prevention thresholds.');
+ lines.push('','6. RISK MODIFIERS','• Consider CAC/plaque imaging, elevated Lp(a), hs-CRP, premature family CVD, CKD, inflammatory disease, obesity, inactivity, psychosocial stress and social deprivation when relevant.','• SCORE2 European regional estimates are not validated for Saudi Arabia.');
+ return lines.join('\n');
+}
+let last='';
+function update(){let age=$('age').value.trim()===''?NaN:Number($('age').value),dm=$('diabetes').value==='yes';$('diabFields').classList.toggle('hide',!(dm&&age>=40&&age<=69));const model=Number.isFinite(age)?modelFor(age,dm):'—';$('model').textContent=model;return model}
+function calculate(){
+ const v=Object.fromEntries(ids.map(id=>[id,$(id).value]));const age=Number(v.age),sbp=Number(v.sbp),tc=Number(v.tc),hdl=Number(v.hdl),model=update(),conv=v.unit==='mg'?38.67:1,tcm=tc/conv,hdlm=hdl/conv;
+ const ldlGiven=v.ldl.trim()!=='';const ldl=ldlGiven?Number(v.ldl)/conv:null;
+ const issues=[];
+ if(ldlGiven&&(!Number.isFinite(ldl)||ldl<=0||ldl>20))issues.push('Enter a valid LDL-C value or leave LDL-C blank');
+ if(!v.age.trim()||!Number.isInteger(age)||age<1||age>120)issues.push('Enter a valid age (1–120)');
+ for(const id of ['sex','smoking','unit','diabetes','ckd','cvd'])if(!v[id])issues.push('Select '+({sex:'sex',smoking:'smoking status',unit:'cholesterol unit',diabetes:'diabetes status',ckd:'CKD status',cvd:'ASCVD status'}[id]));
+ if(!v.sbp.trim()||!Number.isFinite(sbp)||sbp<50||sbp>300)issues.push('Enter valid systolic BP');
+ if(!v.tc.trim()||!v.hdl.trim()||!Number.isFinite(tc)||!Number.isFinite(hdl)||tc<=0||hdl<=0||hdl>=tc)issues.push('Enter valid total and HDL cholesterol (HDL must be lower than total)');
+ if(!v.region)issues.push('Select a risk region');
+ if(model==='SCORE2-Diabetes'&&(!v.diagage||Number(v.diagage)>age||Number(v.diagage)<1||!v.hba1c||Number(v.hba1c)<3||Number(v.hba1c)>20||!v.egfr||Number(v.egfr)<=0))issues.push('Enter diabetes diagnosis age, HbA1c and eGFR');
+ let status,reason='',risk=null,category='',lipid='';
+ if(issues.length){status='ADDITIONAL DATA REQUIRED';reason=issues.join('; ')}
+ else if(v.cvd==='yes'){status='NOT APPLICABLE';reason='Established ASCVD: secondary prevention; SCORE2 risk estimation is not appropriate.'}
+ else if(model==='NOT APPLICABLE'){status='NOT APPLICABLE';reason='Age outside the supported model range (40–89 years).'}
+ else if(v.region==='outside'){status='UNVERIFIED';reason='No validated European risk region selected. The European models are not calibrated for Saudi Arabia.'}
+ else if(v.ckd==='yes'){status='NOT APPLICABLE';reason='Known CKD requires disease-specific cardiovascular risk assessment; standard SCORE2 should not be used as an unqualified estimate.'}
+ else if(model!=='SCORE2'){status='UNVERIFIED';reason=model+' original algorithm and regional validation are not yet independently completed in this release; no numerical risk is reported.'}
+ else if(tcm>20||hdlm>10||tcm<hdlm){status='ADDITIONAL DATA REQUIRED';reason='Cholesterol inputs appear outside plausible validated clinical range; verify units and values.'}
+ else {risk=score2(age,v.sex,v.smoking==='yes',sbp,tcm,hdlm,v.region);if(!Number.isFinite(risk)||risk<0||risk>100){status='UNVERIFIED';reason='Numerical calculation failed safety checks';risk=null}else{status='CALCULATED — ESC SCORE2';category=esc2021(age,risk);lipid=lipid2025(risk);reason='Original SCORE2 2021 published four-decimal coefficients and ESC European regional calibration. Independent multi-case MDCalc/ESC comparison is incomplete.'}}
+ let advice='';
+ if(risk!==null){
+ advice=`ADVICE\n• ${risk.toFixed(1)}% estimated 10-year fatal and non-fatal CVD risk (European ${v.region} region).\n• ESC 2021 age-specific prevention category: ${category}.\n• ESC/EAS 2025 lipid risk band: ${lipid} (different classification framework).\n• Discuss risk and prevention preferences with the patient.\n• Reassess smoking, BP, lipids and other risk modifiers periodically.\n\nMANAGEMENT CONSIDERATIONS\n`;
+ if(v.smoking==='yes')advice+='• Offer smoking cessation support.\n';
+ if(sbp>=140)advice+='• Elevated systolic BP: confirm with repeated/ambulatory readings and assess need for BP management.\n';
+ if(tcm>=8)advice+='• Markedly elevated total cholesterol (>8 mmol/L): evaluate severe dyslipidaemia/familial hypercholesterolaemia; risk category may be higher independently of SCORE2.\n';
+ advice+='• Lifestyle: heart-healthy diet, physical activity, weight management.\n• Consider diabetes screening, kidney function, family history and risk modifiers when clinically indicated.\n\n'+treatmentPlan(v,risk,category,lipid,ldl,tcm,sbp)+'\n\nLIMITATIONS\n• ESC regional calibration is not validated for Saudi Arabia.\n• Numerical engine uses published ESC parameters; full external reference-case validation is still pending.\n';
+ }else advice=`${status}\n${reason}\nDo not derive treatment recommendations from an unavailable or inapplicable risk estimate. Use disease-specific guidelines and a validated calculator where appropriate.`;
+ last=`SCORE2 Cardiovascular Risk Assessment\nStatus: ${status}\nSelected model: ${model}\nAge: ${v.age}; Sex: ${v.sex}; Smoking: ${v.smoking}; SBP: ${v.sbp} mmHg\nTotal cholesterol: ${v.tc} ${v.unit==='mg'?'mg/dL':'mmol/L'} (${tcm.toFixed(2)} mmol/L)\nHDL cholesterol: ${v.hdl} ${v.unit==='mg'?'mg/dL':'mmol/L'} (${hdlm.toFixed(2)} mmol/L)\nLDL-C: ${ldl===null?'Not supplied':ldl.toFixed(2)+' mmol/L'}\nRegion: ${v.region}; Diabetes: ${v.diabetes}; CKD: ${v.ckd}; ASCVD: ${v.cvd}\n${model==='SCORE2-Diabetes'?`Age at diagnosis: ${v.diagage}; HbA1c: ${v.hba1c}%; eGFR: ${v.egfr}\n`:''}10-year CVD risk: ${risk===null?'NOT REPORTED':risk.toFixed(1)+'%'}\nESC 2021 age-specific category: ${category||'NOT REPORTED'}\nESC/EAS 2025 lipid risk band: ${lipid||'NOT REPORTED'}\n\n${advice}\nReferences: SCORE2 2021; ESC SCORE2 coefficient clarification 2022; ESC prevention 2021; ESC/EAS dyslipidaemia update 2025.`;
+ $('status').textContent=status;$('risk').textContent='10-year CVD risk: '+(risk===null?'NOT REPORTED':risk.toFixed(1)+'%');$('interpret').textContent=reason+(category?' | ESC 2021: '+category+' | ESC/EAS 2025: '+lipid:'');$('nextsteps').textContent=advice;$('summary').textContent=last;
+}
+ids.forEach(id=>$(id).addEventListener('change',update));$('calculate').onclick=calculate;$('reset').onclick=()=>{ids.forEach(id=>{$(id).value='';});last='';$('diabFields').classList.add('hide');$('model').textContent='—';$('status').textContent='Awaiting patient data.';$('risk').textContent='10-year CVD risk: —';$('interpret').textContent='Enter patient data and select Calculate.';$('nextsteps').textContent='Calculate to display case-specific advice and safety notes.';$('summary').textContent='No assessment yet.';$('age').focus();};$('copy').onclick=async()=>{if(!last){$('status').textContent='Calculate a result before copying.';return;}try{await navigator.clipboard.writeText(last)}catch(e){const t=document.createElement('textarea');t.value=last;document.body.append(t);t.select();document.execCommand('copy');t.remove()}};$('print').onclick=()=>{if(!last){$('status').textContent='Calculate a result before printing.';return;}window.print()};
+// Regression: MDCalc reference screenshot, 63-year-old male current smoker, SBP 160, TC 10, HDL 1, moderate region => 27.1%.
+const check=score2(63,'male',true,160,10,1,'moderate');if(Math.abs(check-27.078288892191782)>1e-9)throw Error('SCORE2 regression test failed');
+update();
+})();
+</script>
+<!-- Hide only Netlify-powered floating badges injected into the page DOM. -->
+<script>
+(function () {
+  'use strict';
+  function check(el) {
+    if (!el || el.nodeType !== 1 || el.dataset.netlifyBadgeHidden) return;
+    var text = (el.textContent || '').trim().replace(/\s+/g, ' ');
+    if (text !== 'Powered by Netlify') return;
+    if (el.children.length && Array.from(el.children).some(function(c){return (c.textContent||'').trim()==='Powered by Netlify'})) return;
+    var badge = el.closest('a,button,[role="button"]') || el;
+    if ((badge.textContent || '').trim().replace(/\s+/g,' ') !== 'Powered by Netlify') badge = el;
+    badge.dataset.netlifyBadgeHidden = 'true';
+    badge.style.setProperty('display', 'none', 'important');
+  }
+  function scan(root) {
+    if (!root || root.nodeType !== 1) return;
+    check(root);
+    root.querySelectorAll('a,button,[role="button"],span,div,p').forEach(check);
+  }
+  function start() {
+    scan(document.body);
+    new MutationObserver(function(records) {
+      records.forEach(function(record) {
+        record.addedNodes.forEach(scan);
+        if (record.type === 'characterData' && record.target.parentElement) check(record.target.parentElement);
+      });
+    }).observe(document.body, {childList:true,subtree:true,characterData:true});
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',start); else start();
+})();
+</script>
+</body></html>

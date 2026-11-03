@@ -1,0 +1,1 @@
+v1.8.56: Primary Recommended Intervention displays the complete procedure name and clinical rationale after Submit & Assess. Dynamic SVG maps laterality, location, stone size and hydronephrosis, with reset synchronization. Corrected duplicate sidebar entries. Clinical guideline-derived decision support only; requires clinician validation and browser testing before clinical use.
