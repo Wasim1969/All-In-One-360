@@ -35,18 +35,31 @@ function renderAtlasGuideline(a,w){
  // Rendered content is static, bundled and derived from the uploaded guideline files.
  content.innerHTML=doc.rendered;
  const review=ATLAS_EDITORIAL_DRAFTS[doc.id];
- if(review){
+ if(review && doc.id==='g28'){
+   const sourceContent=content.innerHTML;
    const panel=document.createElement('div');panel.className='atlas-editorial-panel';
-   panel.innerHTML='<div class="review-alert"><strong>Editorial review draft — NOT clinically validated.</strong> This is a separate reconstructed summary. Original guideline content remains below. The YES/NO diagrams and numerical criteria of 27 topics still require original-PDF visual verification and independent guideline cross-checking. Do not use as a standalone approval rule.</div>'
-      +atlasDraftSection('1. Clinical Overview',review.overview)
-      +atlasDraftSection('2. Indications & Documentation',review.indications)
-      +atlasDraftSection('3. Decision Pathway — Provisional',review.algorithm)
-      +atlasDraftSection('4. Cautions and Verification',review.caution);
-   const original=document.createElement('details');original.className='atlas-original-content';original.open=false;
-   const summary=document.createElement('summary');summary.textContent='Original source-derived content (expand for comparison)';
-   original.append(summary);
-   const holder=document.createElement('div');holder.innerHTML=content.innerHTML;original.append(holder);
-   content.replaceChildren(panel,original);
+   panel.innerHTML=`<div class="review-alert"><strong>Clinical comparison — not a universal coverage rule.</strong> The original uploaded flowchart and current clinical recommendations differ on several risk factors. The original rules are displayed separately below and must not be treated as universally valid screening indications.</div>
+   <section class="section"><h3>1. Scope and test</h3><p>Serum 25-hydroxyvitamin D [25(OH)D]. This is a testing-indication assessment, not a vitamin D treatment or deficiency-threshold algorithm. The uploaded pathway is limited to non-pregnant adults.</p></section>
+   <section class="section"><h3>2. Evidence-oriented clinical assessment</h3>
+     <div class="atlas-decision"><div class="atlas-question"><strong>Is there a specific clinical reason to measure 25(OH)D?</strong><small>Examples: suspected osteomalacia, unexplained hypocalcemia, malabsorption, or a relevant metabolic bone disorder where the result will affect management.</small></div>
+       <div class="atlas-branches"><div class="atlas-branch yes"><b>YES</b><p>Document the diagnosis or clinical findings and the expected effect on management.</p><div class="atlas-result">Targeted testing may be clinically justified.</div></div><div class="atlas-branch no"><b>NO</b><p>Healthy, asymptomatic individual without a defined indication.</p><div class="atlas-result">Routine screening is generally not recommended.</div></div></div></div>
+     <p><strong>Important:</strong> Age &gt;65 years, BMI &gt;30, or a dietary category alone appear as positive branches in the uploaded source, but should not be automatically converted into universal evidence-based testing criteria. Apply the relevant insurer or local coverage policy separately.</p>
+   </section><section class="section"><h3>3. Clinical and source-policy distinction</h3><p><strong>Original uploaded policy:</strong> Contains a multi-step eligibility flowchart using age, BMI, diet, medications and conditions. Its exact decision branches remain visible in the expandable original section below.</p><p><strong>External clinical guidance:</strong> NICE PH56 advises against routine testing without symptoms, particularly high risk or another clinical reason. The Endocrine Society 2024 guideline advises against routine 25(OH)D screening in generally healthy populations, including obesity alone.</p></section>
+   <section class="section"><h3>4. References</h3><p><a href="https://www.nice.org.uk/guidance/ph56/chapter/recommendations" target="_blank" rel="noopener noreferrer">NICE PH56 — recommendations</a></p><p><a href="https://www.endocrine.org/clinical-practice-guidelines/vitamin-d-for-prevention-of-disease" target="_blank" rel="noopener noreferrer">Endocrine Society 2024</a></p></section>`;
+   const original=document.createElement('details');original.className='atlas-original-content';
+   const summary=document.createElement('summary');summary.textContent='Original uploaded source pathway — expand to inspect YES/NO branches';
+   const holder=document.createElement('div');holder.innerHTML=sourceContent;
+   original.append(summary,holder);content.replaceChildren(panel,original);
+ } else if(review){
+   const details=document.createElement('details');details.className='atlas-editorial-draft';
+   const summary=document.createElement('summary');summary.textContent='Optional editorial summary — provisional, not clinically validated';
+   const panel=document.createElement('div');panel.className='atlas-editorial-panel';
+   panel.innerHTML='<div class="review-alert"><strong>Unverified editorial summary.</strong> This draft is not an independently validated clinical pathway. Use the original source-derived content above for comparison; original PDF diagram verification is still required.</div>'
+     +atlasDraftSection('Clinical overview',review.overview)
+     +atlasDraftSection('Indications and documentation',review.indications)
+     +atlasDraftSection('Provisional narrative pathway',review.algorithm)
+     +atlasDraftSection('Cautions',review.caution);
+   details.append(summary,panel);content.append(details);
  }
 
  w.append(head,content);

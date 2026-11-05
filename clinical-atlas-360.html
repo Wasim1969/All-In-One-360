@@ -87,4 +87,19 @@
 #workspace .atlas-editorial-panel .section p{white-space:pre-line}
 #workspace .atlas-original-content{border:1px solid #cad8e5;border-radius:10px;padding:16px;margin-top:20px}
 #workspace .atlas-original-content summary{cursor:pointer;font-weight:700;color:#214e77}
+</style><style id="atlas-187-decision">
+#workspace .atlas-decision{max-width:900px;margin:20px auto 24px}
+#workspace .atlas-question{border:2px solid #35698a;background:#edf5fa;border-radius:14px;padding:18px;text-align:center}
+#workspace .atlas-question strong{display:block;font-size:18px}
+#workspace .atlas-question small{display:block;margin-top:9px;line-height:1.6}
+#workspace .atlas-branches{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+#workspace .atlas-branch{border:1px solid #afc4d4;border-radius:12px;padding:18px;position:relative;background:#fff}
+#workspace .atlas-branch:before{content:'↓';position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-size:23px;color:#35698a}
+#workspace .atlas-branch b{display:block;text-align:center;font-size:16px}
+#workspace .atlas-branch.yes b{color:#14774e}#workspace .atlas-branch.no b{color:#a04429}
+#workspace .atlas-result{border-radius:8px;padding:12px;font-weight:700;background:#f0f6fa}
+#workspace .atlas-branch.yes .atlas-result{background:#e8f6ee}#workspace .atlas-branch.no .atlas-result{background:#fff1e9}
+#workspace .atlas-editorial-draft{border:1px solid #c9d7e5;border-radius:12px;padding:15px;margin-top:25px}
+#workspace .atlas-editorial-draft summary{cursor:pointer;font-weight:700;color:#1e547e}
+@media(max-width:650px){#workspace .atlas-branches{grid-template-columns:1fr;gap:28px}}
 </style></head><body><header class="hero"><div class="brand"><div class="logo">✧</div><div><h1>CLINICAL ATLAS <span style="font-weight:400;opacity:.7">/ Algorithm Library</span></h1><p>Clinical algorithms and medical guidelines · Browse, read &amp; reference</p></div></div></header><main class="shell"><div class="toolbar"><input class="search" id="search" placeholder="⌕  Search algorithms, specialties, keywords…" aria-label="Search"><button class="btn" id="add">＋ Add Algorithm</button><button class="btn light" id="restore">↺ Restore deleted</button></div><div class="layout"><aside class="sidebar"><div class="panehead"><h2>Algorithm Library</h2></div><div id="library"></div></aside><section class="workspace" id="workspace"><div class="welcome"><div class="symbol">◈</div><h2>Your clinical knowledge, beautifully mapped.</h2><p class="muted">Click any diagnosis to view its original algorithm.</p><span class="chip">Read-only flowcharts · No patient assessment</span></div></section></div></main><div class="modal" id="modal"><div class="dialog"><h2>Add a clinical algorithm</h2><p class="muted">Create a manual, read-only flowchart. New entries sort A–Z automatically.</p><label>Algorithm title<input id="newtitle" placeholder="e.g. Preterm Labor"></label><label>Specialty<input id="newgroup" list="specialtyOptions" placeholder="e.g. Obstetrics & Gynecology"><datalist id="specialtyOptions"></datalist></label><label>Flowchart steps (one per line)</label><textarea id="newsteps" placeholder="START: Patient presents with symptoms&#10;QUESTION: Is the patient stable?&#10;YES: Continue assessment&#10;NO: Urgent evaluation&#10;END: Follow guideline-based pathway"></textarea><p class="muted">Manual lines are rendered in order. For a branching diagram with reusable nodes, you may instead paste JSON using {"start":"...","nodes":{"...":{"text":"...","choices":{"Yes":"..."}}}}.</p><div class="actions"><button class="btn light" id="cancel">Cancel</button><button class="btn" id="save">Save Algorithm</button></div></div></div><script src="clinical-atlas-360.part1.js"></script></body></html>
