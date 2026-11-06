@@ -150,4 +150,5 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')$('atlasImageModal')
 
 $('atlasList').addEventListener('click',e=>{const row=e.target.closest('[data-id]');if(row){active=row.dataset.id;render();$('atlasViewer').scrollTop=0;}});$('atlasSearch').addEventListener('input',renderList);$('atlasFilters').addEventListener('click',e=>{let b=e.target.closest('[data-group]');if(!b)return;group=b.dataset.group;document.querySelectorAll('#atlasFilters button').forEach(x=>x.classList.toggle('active',x===b));renderList()});render();
 })();
-</script></body></html>
+</script>
+</body></html>
