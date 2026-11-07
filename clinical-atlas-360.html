@@ -105,9 +105,9 @@
 </style></head><body><header class="hero"><div class="brand"><div class="logo">✧</div><div><h1>CLINICAL ATLAS <span style="font-weight:400;opacity:.7">/ Algorithm Library</span></h1><p>Clinical algorithms and medical guidelines · Browse, read &amp; reference</p></div></div></header><main class="shell"><div class="toolbar"><input class="search" id="search" placeholder="⌕  Search algorithms, specialties, keywords…" aria-label="Search"><button class="btn" id="add">＋ Add Algorithm</button><button class="btn light" id="restore">↺ Restore deleted</button></div><div class="layout"><aside class="sidebar"><div class="panehead"><h2>Algorithm Library</h2></div><div id="library"></div></aside><section class="workspace" id="workspace"><div class="welcome"><div class="symbol">◈</div><h2>Your clinical knowledge, beautifully mapped.</h2><p class="muted">Click any diagnosis to view its original algorithm.</p><span class="chip">Read-only flowcharts · No patient assessment</span></div></section></div></main><div class="modal" id="modal"><div class="dialog"><h2>Add a clinical algorithm</h2><p class="muted">Create a manual, read-only flowchart. New entries sort A–Z automatically.</p><label>Algorithm title<input id="newtitle" placeholder="e.g. Preterm Labor"></label><label>Specialty<input id="newgroup" list="specialtyOptions" placeholder="e.g. Obstetrics & Gynecology"><datalist id="specialtyOptions"></datalist></label><label>Flowchart steps (one per line)</label><textarea id="newsteps" placeholder="START: Patient presents with symptoms&#10;QUESTION: Is the patient stable?&#10;YES: Continue assessment&#10;NO: Urgent evaluation&#10;END: Follow guideline-based pathway"></textarea><p class="muted">Manual lines are rendered in order. For a branching diagram with reusable nodes, you may instead paste JSON using {"start":"...","nodes":{"...":{"text":"...","choices":{"Yes":"..."}}}}.</p><div class="actions"><button class="btn light" id="cancel">Cancel</button><button class="btn" id="save">Save Algorithm</button></div></div></div><script src="clinical-atlas-360.part1.js"></script>
 <!-- ENDOMETRIAL_THICKNESS_ATLAS_MODULE_V1_6 -->
 <style>
-#library .et-atlas-item{background:#fff1f8!important;border-left:5px solid #b65a96!important;color:#702b60!important;font-weight:750;padding:13px 14px;cursor:pointer}
-
-
+#et-atlas-entry{margin:10px 8px 12px;padding:12px;background:#fff1f8;border:2px solid #b65a96;border-radius:12px;color:#702b60}
+#et-atlas-entry button{display:block;width:100%;border:0;background:#963c7c;color:#fff;border-radius:9px;padding:12px 8px;font-weight:750;cursor:pointer;text-align:left}
+#et-atlas-entry small{display:block;margin-top:7px;font-size:11px;line-height:1.5}
 #et-atlas-overlay{position:fixed;inset:0;background:#27182cbb;z-index:99999;display:none;align-items:center;justify-content:center;padding:12px}
 #et-atlas-overlay.open{display:flex}
 #et-atlas-panel{display:flex;flex-direction:column;background:#fff9fc;border-radius:16px;width:min(1250px,100%);height:94vh;overflow:hidden}
@@ -122,26 +122,51 @@
 <script>
 (function(){'use strict';
 const library=document.getElementById('library');if(!library)return;
-const button=document.createElement('div');button.id='et-atlas-entry';button.className='item et-atlas-item';button.tabIndex=0;button.setAttribute('role','button');button.setAttribute('aria-label','Open Endometrial Thickness clinical decision tool');button.textContent='♀  Endometrial Thickness';
-function locate(){
-  const q=(document.getElementById('search')?.value||'').trim().toLowerCase();
-  const match=!q||('endometrial thickness obstetrics gynecology').includes(q);
-  const groups=[...library.querySelectorAll('.atlas-specialty')];
-  const group=groups.find(g=>/obstetrics\s*&\s*gynecology/i.test(g.querySelector('.grouphead')?.textContent||''));
-  if(!group||!match){if(button.parentNode)button.remove();return;}
-  const head=group.querySelector('.grouphead');
-  const expanded=(head?.textContent||'').trim().startsWith('▾');
-  if(!expanded){if(button.parentNode)button.remove();return;}
-  if(button.parentNode!==group)head.insertAdjacentElement('afterend',button);
-}
+const card=document.createElement('section');card.id='et-atlas-entry';
+const button=document.createElement('button');button.type='button';button.textContent='♀ Endometrial Thickness';
+const note=document.createElement('small');note.textContent='Obstetrics & Gynecology · Interactive clinical assessment';
+card.append(button,note);library.prepend(card);
 const overlay=document.getElementById('et-atlas-overlay'),close=document.getElementById('et-atlas-close'),frame=document.getElementById('et-atlas-frame');
-function openTool(){if(!frame.src)frame.src=frame.dataset.src;overlay.classList.add('open');close.focus()}
-button.addEventListener('click',openTool);button.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openTool()}});
+button.addEventListener('click',()=>{if(!frame.src)frame.src=frame.dataset.src;overlay.classList.add('open');close.focus()});
 function shut(){overlay.classList.remove('open');button.focus()}
 close.addEventListener('click',shut);overlay.addEventListener('click',e=>{if(e.target===overlay)shut()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))shut()});
 // Preserve module entry when the Atlas library is rebuilt after a search or filter.
-const observer=new MutationObserver(locate);observer.observe(library,{childList:true,subtree:true});locate();
+const observer=new MutationObserver(()=>{if(!library.contains(card))library.prepend(card)});
+observer.observe(library,{childList:true});
+})();
+</script>
+<!-- ATLAS_FIVE_INTERACTIVE_TOOLS_2026_11 -->
+<style>
+#library .new-gyn-tool{background:#fff0f7!important;border-left:5px solid #b75393!important;color:#71275b!important;font-weight:750;padding:12px 14px;cursor:pointer}
+#library .new-gyn-tool:focus{outline:2px solid #a43e83}
+#new-gyn-overlay{position:fixed;inset:0;background:#2b172bc9;z-index:100001;display:none;align-items:center;justify-content:center;padding:12px}
+#new-gyn-overlay.open{display:flex}
+#new-gyn-panel{display:flex;flex-direction:column;background:#fff8fc;border-radius:16px;width:min(1280px,100%);height:95vh;overflow:hidden}
+#new-gyn-head{background:#85366f;color:white;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;font-weight:750}
+#new-gyn-close{border:0;border-radius:8px;padding:9px 13px;background:white;color:#85366f;cursor:pointer}
+#new-gyn-frame{width:100%;flex:1;border:0;background:white}
+@media print{#new-gyn-overlay{display:none!important}}
+</style>
+<div id="new-gyn-overlay" role="dialog" aria-modal="true" aria-label="Gynecology Clinical Assessment"><section id="new-gyn-panel"><div id="new-gyn-head"><span id="new-gyn-title"></span><button id="new-gyn-close" type="button">Close ✕</button></div><iframe id="new-gyn-frame" title="Interactive clinical assessment"></iframe></section></div>
+<script>
+(function(){'use strict';
+const tools=[["PROM & PPROM", "PROM_PPROM_Clinical_Tool.html", "prom pprom rupture membranes"], ["Preterm Labour", "Preterm_Labour_Clinical_Tool.html", "preterm labour preterm labor"], ["Ectopic Pregnancy", "Ectopic_Pregnancy_Clinical_Tool.html", "ectopic pregnancy"], ["Cesarean Scar Niche", "Cesarean_Scar_Niche_Clinical_Tool.html", "cesarean scar niche isthmocele"], ["Uterine Artery Embolization (UAE)", "UAE_Clinical_Indications_Tool.html", "uterine artery embolization uae fibroid"]];
+const lib=document.getElementById('library'), overlay=document.getElementById('new-gyn-overlay'),frame=document.getElementById('new-gyn-frame'),title=document.getElementById('new-gyn-title'),close=document.getElementById('new-gyn-close');
+if(!lib)return;
+const entries=tools.map((t,i)=>{const b=document.createElement('div');b.className='item new-gyn-tool';b.tabIndex=0;b.setAttribute('role','button');b.textContent='♀  '+t[0];b.dataset.tool=i;function open(){title.textContent=t[0]+' · Clinical Assessment';frame.src=t[1];overlay.classList.add('open');close.focus()}b.addEventListener('click',open);b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});return b});
+let updating=false;
+function locate(){if(updating)return;updating=true;try{
+const groups=[...lib.querySelectorAll('.atlas-specialty')],group=groups.find(g=>/obstetrics\s*&\s*gynecology/i.test(g.querySelector('.grouphead')?.textContent||''));
+const q=(document.getElementById('search')?.value||'').trim().toLowerCase();
+// Hide only legacy diagnoses corresponding to the five new interactive modules.
+const legacy=lib.querySelectorAll('.item:not(.new-gyn-tool):not(.et-atlas-item)');
+legacy.forEach(el=>{const txt=(el.textContent||'').trim().toLowerCase();const replacement=/^(?:prom\s*(?:and|&|\/)\s*pprom|pprom|preterm labou?r|choosing treatment for ectopic pregnancy|ectopic pregnancy|cesarean scar (?:uterine )?niche|uterine artery emboli[sz]ation|uae\s*[-–:]?)/i.test(txt);if(replacement){if(el.style.display!=='none')el.style.display='none';}});
+const expanded=group&&/^▾/.test((group.querySelector('.grouphead')?.textContent||'').trim());
+entries.forEach((b,i)=>{const show=group&&expanded&&(!q||(tools[i][0]+' '+tools[i][2]+' obstetrics gynecology').toLowerCase().includes(q));if(show){if(b.parentNode!==group)group.querySelector('.grouphead').insertAdjacentElement('afterend',b)}else if(b.parentNode)b.remove()});
+}finally{updating=false}}
+const observer=new MutationObserver(()=>{observer.disconnect();locate();observer.observe(lib,{childList:true,subtree:true})});observer.observe(lib,{childList:true,subtree:true});document.getElementById('search')?.addEventListener('input',()=>setTimeout(locate,0));locate();
+function shut(){overlay.classList.remove('open');frame.removeAttribute('src')};close.addEventListener('click',shut);overlay.addEventListener('click',e=>{if(e.target===overlay)shut()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))shut()});
 })();
 </script>
 </body></html>
